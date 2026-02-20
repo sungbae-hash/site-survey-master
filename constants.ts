@@ -88,11 +88,21 @@ export const SURVEY_CONFIG: SurveyField[] = [
     category: 'basic',
     options: generateCountOptions(),
   },
+  {
+    id: 'fence',
+    label: '9. 휀스',
+    type: 'select',
+    category: 'basic',
+    options: [
+      { label: '있음', value: '있음' },
+      { label: '없음', value: '없음' },
+    ],
+  },
 
-  // --- [공중선] Group (9~13) ---
+  // --- [공중선] Group (10~14) ---
   {
     id: 'towerType',
-    label: '9. 철탑유형',
+    label: '10. 철탑유형',
     type: 'select',
     category: 'antenna',
     options: [
@@ -109,14 +119,14 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'towerQty',
-    label: '10. 설치 수량',
+    label: '11. 설치 수량',
     type: 'select',
     category: 'antenna',
     options: generateCountOptions(1, 10),
   },
   {
     id: 'guyWireCount',
-    label: '11. 지선 수',
+    label: '12. 지선 수',
     type: 'select',
     category: 'antenna',
     options: [
@@ -128,7 +138,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'screening',
-    label: '12. 가림막',
+    label: '13. 가림막',
     type: 'select',
     category: 'antenna',
     options: [
@@ -139,7 +149,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'antLoc',
-    label: '13. 안테나설치위치',
+    label: '14. 안테나설치위치',
     type: 'select',
     category: 'antenna',
     options: [
@@ -148,10 +158,10 @@ export const SURVEY_CONFIG: SurveyField[] = [
     ],
   },
 
-  // --- [안전 관리] Group (14~15) ---
+  // --- [안전 관리] Group (15~16) ---
   {
     id: 'step_status',
-    label: '14. 발판 상태',
+    label: '15. 발판 상태',
     type: 'select',
     category: 'safety',
     options: [
@@ -159,10 +169,10 @@ export const SURVEY_CONFIG: SurveyField[] = [
       { label: '없음 (높이/사다리 입력)', value: '없음' },
     ],
   },
-  // 14-1 ~ 14-14 (발판 있음 경우)
+  // 15-1 ~ 15-14 (발판 있음 경우)
   {
     id: 'step_b3',
-    label: '14-1. B3 발판',
+    label: '15-1. B3 발판',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -170,7 +180,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_b5',
-    label: '14-2. B5 발판',
+    label: '15-2. B5 발판',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -178,7 +188,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_b7',
-    label: '14-3. B7 발판',
+    label: '15-3. B7 발판',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -186,7 +196,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_b1',
-    label: '14-4. B1 발판',
+    label: '15-4. B1 발판',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -194,7 +204,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_mc',
-    label: '14-5. MC 발판',
+    label: '15-5. MC 발판',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -202,7 +212,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_mibos',
-    label: '14-6. MIBOS 발판',
+    label: '15-6. MIBOS 발판',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -210,7 +220,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_rect1',
-    label: '14-7. LTE정류기#1',
+    label: '15-7. LTE정류기#1',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -218,7 +228,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_rect2',
-    label: '14-8. LTE정류기#2',
+    label: '15-8. LTE정류기#2',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -226,7 +236,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_5g_rect',
-    label: '14-9. 5G정류기',
+    label: '15-9. 5G정류기',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -234,7 +244,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_5g_mux',
-    label: '14-10. 5G MUX',
+    label: '15-10. 5G MUX',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -242,7 +252,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_dist1',
-    label: '14-11. 분전함#1',
+    label: '15-11. 분전함#1',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -250,7 +260,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_dist2',
-    label: '14-12. 분전함#2',
+    label: '15-12. 분전함#2',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -258,7 +268,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_ojc1',
-    label: '14-13. OJC#1',
+    label: '15-13. OJC#1',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
@@ -266,16 +276,16 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_ojc2',
-    label: '14-14. OJC#2',
+    label: '15-14. OJC#2',
     type: 'select',
     category: 'safety',
     options: STEP_SUB_OPTIONS,
     condition: (data) => data.step_status === '있음',
   },
-  // 14-15 ~ 14-16 (발판 있음 경우) - *Wait, IDK why "있음" was written in previous plan for these two. It's "없음". Fixed logic below.*
+  // 15-15 ~ 15-16 (발판 없음 경우) - *Wait, IDK why "있음" was written in previous plan for these two. It's "없음". Fixed logic below.*
   {
     id: 'step_height',
-    label: '14-15. 높이',
+    label: '15-15. 높이',
     type: 'select',
     category: 'safety',
     options: [
@@ -286,7 +296,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'step_ladder_req',
-    label: '14-16. 사다리 필요여부',
+    label: '15-16. 사다리 필요여부',
     type: 'select',
     category: 'safety',
     options: [
@@ -298,7 +308,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
 
   {
     id: 'ladder_status',
-    label: '15. 사다리',
+    label: '16. 사다리',
     type: 'select',
     category: 'safety',
     options: [
@@ -307,10 +317,10 @@ export const SURVEY_CONFIG: SurveyField[] = [
     ],
   },
 
-  // --- [출입] Group (16~19) ---
+  // --- [출입] Group (17~20) ---
   {
     id: 'military',
-    label: '16. 군부대',
+    label: '17. 군부대',
     type: 'select',
     category: 'access',
     options: [
@@ -322,7 +332,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'accessRequired',
-    label: '17. 상시출입 필요',
+    label: '18. 상시출입 필요',
     type: 'select',
     category: 'access',
     options: [
@@ -333,7 +343,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'highAltitude',
-    label: '18. 고지국소',
+    label: '19. 고지국소',
     type: 'select',
     category: 'access',
     options: [
@@ -343,7 +353,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   },
   {
     id: 'floodingRisk',
-    label: '19. 침수예상',
+    label: '20. 침수예상',
     type: 'select',
     category: 'access',
     options: [
