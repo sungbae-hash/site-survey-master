@@ -287,7 +287,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   {
     id: 'step_ladder_req',
     label: '14-16. 사다리 필요여부',
-    type: 'radio',
+    type: 'select',
     category: 'safety',
     options: [
       { label: '필요', value: '필요' },
@@ -299,7 +299,7 @@ export const SURVEY_CONFIG: SurveyField[] = [
   {
     id: 'ladder_status',
     label: '15. 사다리',
-    type: 'radio',
+    type: 'select',
     category: 'safety',
     options: [
       { label: '사다리 있음', value: '사다리 있음' },
