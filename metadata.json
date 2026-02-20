@@ -1,0 +1,7 @@
+{
+  "name": "Site Survey Master",
+  "description": "Mobile-first base station site survey tool with Kakao Map integration, dynamic form generation, and clipboard export.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
