@@ -302,8 +302,8 @@ export const SURVEY_CONFIG: SurveyField[] = [
     type: 'radio',
     category: 'safety',
     options: [
-      { label: '있음', value: '있음' },
-      { label: '없음', value: '없음' },
+      { label: '사다리 있음', value: '사다리 있음' },
+      { label: '사다리 없음', value: '사다리 없음' },
     ],
   },
 
