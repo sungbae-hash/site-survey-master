@@ -3,7 +3,9 @@ name: Deploy to Dothome FTP
 on:
   push:
     branches:
-      - main # main 브랜치에 푸시될 때 실행됩니다.
+      - master # master 또는 main 브랜치에 푸시될 때 실행됩니다.
+      - main
+  workflow_dispatch: # 수동으로 Actions 탭에서 실행할 수 있게 해주는 옵션입니다.
 
 jobs:
   deploy:
