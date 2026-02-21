@@ -67,16 +67,11 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ currentLocation, onLocationSelect }
       let finalBuildingName = vworldInfo?.name || basicBuildingName || undefined;
       let finalFloorCount = vworldInfo?.floorCount;
 
-      // 4. V-World 건물 정보가 없을 경우 공공데이터(건축물대장) Fallback 호출
+      // 4. V-World 건물 정보가 없을 경우 카카오 장소 검색 API Fallback 호출
       if (!finalFloorCount && status === window.kakao.maps.services.Status.OK) {
         const addrItem = result[0];
-        if (addrItem.address && addrItem.address.b_code) {
-          const bCode = addrItem.address.b_code;
-          const platGbCd = addrItem.address.mountain_yn === 'Y' ? '1' : '0';
-          const bun = addrItem.address.main_address_no;
-          const ji = addrItem.address.sub_address_no;
-
-          const publicInfo = await fetchPublicBuildingInfo(bCode, platGbCd, bun, ji);
+        if (addrItem) {
+          const publicInfo = await fetchPublicBuildingInfo(roadAddr, jibunAddr);
 
           // 그 사이 다른 곳을 클릭했다면 무시
           if (currentReq !== requestRef.current) return;
