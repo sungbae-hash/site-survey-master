@@ -19,8 +19,7 @@ export const fetchBuildingInfo = async (lat: number, lng: number): Promise<Build
         return buildingCache.get(cacheKey) || null;
     }
 
-    // VWorld API 건출물통합정보(LT_C_BULDINFO) 혹은 관련 데이터 레이어에서 건물 정보 요청
-    const url = `https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_BULDINFO&key=${VWORLD_KEY}&domain=${window.location.hostname}&geomFilter=POINT(${lng} ${lat})&crs=EPSG:4326`;
+    const url = `https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_SPBD&key=${VWORLD_KEY}&domain=${window.location.hostname}&geomFilter=POINT(${lng} ${lat})&crs=EPSG:4326`;
 
     return new Promise((resolve) => {
         const callbackName = `vworld_cb_${Date.now()}`;
@@ -50,13 +49,9 @@ export const fetchBuildingInfo = async (lat: number, lng: number): Promise<Build
                 const feature = data.response.result.featureCollection.features[0];
                 const props = feature.properties;
 
-                // VWorld 데이터 포맷에 따라 속성 이름이 다를 수 있으므로 안전하게 파싱 (grnd_flr, gro_flo_co 등)
-                const name = props.buld_nm || props.bld_nm || '';
-                const groundStr = props.grnd_flr || props.gro_flo_co || props.grnd_flr_cnt || 0;
-                const underStr = props.ugrnd_flr || props.und_flo_co || props.ugrnd_flr_cnt || 0;
-
-                const ground = parseInt(String(groundStr), 10) || 0;
-                const under = parseInt(String(underStr), 10) || 0;
+                const name = props.buld_nm || '';
+                const ground = props.gro_flo_co || 0;
+                const under = props.und_flo_co || 0;
 
                 let floorStr = '';
                 if (ground > 0) floorStr += `지상 ${ground}층`;
