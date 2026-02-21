@@ -24,8 +24,13 @@ export const fetchPublicBuildingInfo = async (
 
     if (!bCode || bCode.length !== 10) return null;
 
-    const sigunguCd = bCode.substring(0, 5);
+    let sigunguCd = bCode.substring(0, 5);
     const bjdongCd = bCode.substring(5, 10);
+
+    // 강원특별자치도(42->51), 전북특별자치도(45->52) 적용
+    // 카카오맵 최신화 여부에 따라 구 법정동 코드가 들어올 수 있으므로 강제 매핑합니다.
+    if (sigunguCd.startsWith('42')) sigunguCd = '51' + sigunguCd.substring(2);
+    if (sigunguCd.startsWith('45')) sigunguCd = '52' + sigunguCd.substring(2);
     const formattedBun = (bun || '0').padStart(4, '0');
     const formattedJi = (ji || '0').padStart(4, '0');
 
@@ -34,8 +39,8 @@ export const fetchPublicBuildingInfo = async (
         return publicDataCache.get(cacheKey) || null;
     }
 
-    // 건축물대장 표제부조회 국토부 API 엔드포인트
-    const url = `https://apis.data.go.kr/1613000/BldRgstService_2/getBrTitleInfo?serviceKey=${PUBLIC_DATA_KEY}&sigunguCd=${sigunguCd}&bjdongCd=${bjdongCd}&platGbCd=${platGbCd}&bun=${formattedBun}&ji=${formattedJi}&numOfRows=1&pageNo=1&_type=json`;
+    // 건축물대장 표제부조회 국토부 API 엔드포인트 (건축HUB 신규 API)
+    const url = `https://apis.data.go.kr/1613000/BldRgstHubService/getBrTitleInfo?serviceKey=${PUBLIC_DATA_KEY}&sigunguCd=${sigunguCd}&bjdongCd=${bjdongCd}&platGbCd=${platGbCd}&bun=${formattedBun}&ji=${formattedJi}&numOfRows=1&pageNo=1&_type=json`;
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2500); // 2.5초 타임아웃
