@@ -14,35 +14,64 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ currentLocation, onLocationSelect }
   const [markerInstance, setMarkerInstance] = useState<any>(null);
   const [loadStatus, setLoadStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
+  const requestRef = useRef<number>(0);
 
   // 주소 및 고도 정보 가져오기
-  const fetchDetails = async (lat: number, lng: number, marker: any) => {
+  const fetchDetails = async (lat: number, lng: number) => {
     if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) return;
 
+    requestRef.current += 1;
+    const currentReq = requestRef.current;
+
+    // 1. 위경도 정보 즉시 반영
+    onLocationSelect({
+      lat,
+      lng,
+      address: '주소 검색 중...',
+      roadAddress: '주소 검색 중...',
+    });
+
     const geocoder = new window.kakao.maps.services.Geocoder();
-    const elevationPromise = getElevation(lat, lng);
+    const elevationPromise = getElevation(lat, lng).catch(() => undefined);
+    const vworldPromise = fetchBuildingInfo(lat, lng).catch(() => undefined);
 
     geocoder.coord2Address(lng, lat, async (result: any, status: any) => {
+      if (currentReq !== requestRef.current) return;
+
+      let roadAddr = '위치 정보 없음';
+      let jibunAddr = '위치 정보 없음';
+      let basicBuildingName: string | undefined = undefined;
+
       if (status === window.kakao.maps.services.Status.OK) {
         const addrItem = result[0];
-
-        // 도로명 주소 및 지번 주소
-        const roadAddr = addrItem.road_address?.address_name || '도로명 주소 없음';
-        const jibunAddr = addrItem.address?.address_name || '지번 주소 없음';
-
-        const elevation = await elevationPromise;
-        const vworldInfo = await fetchBuildingInfo(lat, lng);
-
-        onLocationSelect({
-          lat,
-          lng,
-          address: jibunAddr,
-          roadAddress: roadAddr,
-          buildingName: vworldInfo?.name || addrItem.road_address?.building_name || undefined,
-          floorCount: vworldInfo?.floorCount,
-          elevation: elevation ? Math.round(elevation) : undefined,
-        });
+        roadAddr = addrItem.road_address?.address_name || '도로명 주소 없음';
+        jibunAddr = addrItem.address?.address_name || '지번 주소 없음';
+        basicBuildingName = addrItem.road_address?.building_name || undefined;
       }
+
+      // 2. 주소 정보 먼저 반영
+      onLocationSelect({
+        lat,
+        lng,
+        address: jibunAddr,
+        roadAddress: roadAddr,
+        buildingName: basicBuildingName,
+      });
+
+      // 3. 고도 및 VWorld 건물 정보 반영
+      const [elevation, vworldInfo] = await Promise.all([elevationPromise, vworldPromise]);
+
+      if (currentReq !== requestRef.current) return;
+
+      onLocationSelect({
+        lat,
+        lng,
+        address: jibunAddr,
+        roadAddress: roadAddr,
+        buildingName: vworldInfo?.name || basicBuildingName || undefined,
+        floorCount: vworldInfo?.floorCount,
+        elevation: elevation ? Math.round(elevation) : undefined,
+      });
     });
   };
 
@@ -78,11 +107,11 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ currentLocation, onLocationSelect }
             window.kakao.maps.event.addListener(map, 'click', (mouseEvent: KakaoMapMouseEvent) => {
               const latlng = mouseEvent.latLng;
               marker.setPosition(latlng);
-              fetchDetails(latlng.getLat(), latlng.getLng(), marker);
+              fetchDetails(latlng.getLat(), latlng.getLng());
             });
 
             // 초기 위치 정보 즉시 분석
-            fetchDetails(center.getLat(), center.getLng(), marker);
+            fetchDetails(center.getLat(), center.getLng());
           } catch (e) {
             console.error("Map Init Error:", e);
             setLoadStatus('error');
@@ -111,7 +140,7 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ currentLocation, onLocationSelect }
       const moveLatLon = new window.kakao.maps.LatLng(currentLocation.lat, currentLocation.lng);
       mapInstance.setCenter(moveLatLon);
       markerInstance?.setPosition(moveLatLon);
-      fetchDetails(currentLocation.lat, currentLocation.lng, markerInstance);
+      fetchDetails(currentLocation.lat, currentLocation.lng);
     }
   }, [currentLocation, loadStatus, mapInstance]);
 
