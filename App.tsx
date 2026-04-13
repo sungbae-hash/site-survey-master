@@ -5,13 +5,12 @@ import SurveyForm from './components/SurveyForm';
 import { SURVEY_CONFIG } from './constants';
 import { getCurrentLocation, decimalToDMS } from './utils/geoUtils';
 import { loadKakaoMapScript } from './utils/kakaoLoader';
-import { LocationData, SurveyMode } from './types';
+import { LocationData } from './types';
 
 const App: React.FC = () => {
   const [locationData, setLocationData] = useState<LocationData | null>(null);
   const [currentGps, setCurrentGps] = useState<{ lat: number; lng: number } | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
-  const [surveyMode, setSurveyMode] = useState<SurveyMode>('baseStation');
   const [copyStatus, setCopyStatus] = useState<string>('');
   const [showPreview, setShowPreview] = useState(false);
 
@@ -41,11 +40,7 @@ const App: React.FC = () => {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const filteredSurveyFields = useMemo(() => {
-    return SURVEY_CONFIG.filter(field =>
-      !field.mode || field.mode.includes(surveyMode)
-    );
-  }, [surveyMode]);
+  const filteredSurveyFields = SURVEY_CONFIG;
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -58,7 +53,7 @@ const App: React.FC = () => {
     if (!locationData) return '';
 
     const lines: string[] = [];
-    lines.push(`[${surveyMode === 'baseStation' ? '기지국' : '중계기'} 현장 조사 데이터]`);
+    lines.push(`[현장 조사 데이터]`);
     lines.push(`작성일시: ${new Date().toLocaleString('ko-KR')}`);
     lines.push(`----------------------------------------`);
     lines.push(`[위치 및 환경 정보]`);
@@ -106,7 +101,7 @@ const App: React.FC = () => {
 
     lines.push(`----------------------------------------`);
     return lines.join('\n');
-  }, [locationData, surveyMode, formData, filteredSurveyFields]);
+  }, [locationData, formData, filteredSurveyFields]);
 
   const handleCopyAction = async () => {
     try {
@@ -188,23 +183,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        <section className="bg-white p-1.5 rounded-2xl shadow-sm border border-gray-200 flex mb-2">
-          <button
-            onClick={() => setSurveyMode('baseStation')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black transition-all ${surveyMode === 'baseStation' ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'text-gray-400 hover:bg-gray-50'}`}
-          >
-            <span className="text-lg">📡</span>
-            <span className="text-sm">기지국</span>
-          </button>
-          <button
-            onClick={() => setSurveyMode('repeater')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black transition-all ${surveyMode === 'repeater' ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'text-gray-400 hover:bg-gray-50'}`}
-          >
-            <span className="text-lg">🔁</span>
-            <span className="text-sm">중계기</span>
-          </button>
-        </section>
-
         <div className="flex gap-2 sticky top-[72px] z-20 pb-2">
           <button
             onClick={() => scrollToSection('section-basic')}
@@ -230,7 +208,7 @@ const App: React.FC = () => {
           <div className="flex items-center gap-2 mb-4 px-1">
             <div className="h-5 w-1.5 bg-blue-600 rounded-full"></div>
             <h2 className="font-black text-slate-800 tracking-tight uppercase text-sm">
-              {surveyMode === 'baseStation' ? 'Base Station' : 'Repeater'} Checklist
+              Site Survey Checklist
             </h2>
           </div>
           <SurveyForm config={filteredSurveyFields} data={formData} onChange={handleFormChange} />

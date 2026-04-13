@@ -35,16 +35,16 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
     return (
       <div
         key={fieldId}
-        id={`field-${field.id}`} // 네비게이션을 위한 ID
-        className={`bg-white p-5 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 scroll-mt-28 ${isDisabled ? 'bg-gray-50 opacity-80' : 'hover:shadow-md'}`}
+        id={`field-${field.id}`}
+        className={`bg-white p-3 rounded-lg shadow-sm border border-gray-100 transition-all duration-300 scroll-mt-28 ${isDisabled ? 'bg-gray-50 opacity-80' : 'hover:shadow-md'}`}
       >
-        <label className={`block text-base font-bold mb-3 ${isDisabled ? 'text-gray-400' : 'text-gray-800'}`}>
+        <label className={`block text-xs font-bold mb-1.5 ${isDisabled ? 'text-gray-400' : 'text-gray-800'}`}>
           {displayLabel}
         </label>
 
         {isDisabled && field.prerequisite && (
-          <div className="mb-3 px-3 py-2 bg-orange-50 border border-orange-100 rounded-lg text-xs font-bold text-orange-600 flex items-start gap-1.5">
-            <span className="text-sm">⚠️</span>
+          <div className="mb-1.5 px-2 py-1 bg-orange-50 border border-orange-100 rounded text-xs font-bold text-orange-600 flex items-start gap-1">
+            <span>⚠️</span>
             <span>{field.prerequisite}</span>
           </div>
         )}
@@ -55,16 +55,16 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
               disabled={isDisabled}
               value={isDisabled ? '' : (data[fieldId] || '')}
               onChange={(e) => onChange(fieldId, e.target.value)}
-              className={`block w-full rounded-lg border shadow-sm focus:border-blue-500 focus:ring-blue-500 py-4 px-4 text-lg appearance-none transition-colors outline-none
+              className={`block w-full rounded border shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 text-sm appearance-none transition-colors outline-none
                 ${isDisabled
                   ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                   : 'bg-white text-gray-900 border-gray-300'
                 }`}
               style={{
                 backgroundImage: isDisabled ? 'none' : 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3e%3cpath stroke=\'%236b7280\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/%3e%3c/svg%3e")',
-                backgroundPosition: 'right 1rem center',
+                backgroundPosition: 'right 0.6rem center',
                 backgroundRepeat: 'no-repeat',
-                backgroundSize: '1.5em 1.5em'
+                backgroundSize: '1.2em 1.2em'
               }}
             >
               <option value="" className="text-gray-400">
@@ -87,7 +87,7 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
               value={isDisabled ? '' : (data[fieldId] || '')}
               onChange={(e) => onChange(fieldId, e.target.value)}
               placeholder={field.placeholder}
-              className={`block w-full rounded-lg border shadow-sm focus:border-blue-500 focus:ring-blue-500 py-4 px-4 text-lg transition-colors outline-none
+              className={`block w-full rounded border shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 text-sm transition-colors outline-none
                 ${isDisabled
                   ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed placeholder-gray-300'
                   : 'bg-white text-gray-900 border-gray-300 placeholder-gray-400'
@@ -103,16 +103,16 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
               value={isDisabled ? '' : (data[fieldId] || '')}
               onChange={(e) => onChange(fieldId, e.target.value)}
               placeholder={field.placeholder}
-              rows={3}
+              rows={2}
               maxLength={100}
-              className={`block w-full rounded-lg border shadow-sm focus:border-blue-500 focus:ring-blue-500 py-4 px-4 text-lg transition-colors outline-none resize-none
+              className={`block w-full rounded border shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 text-sm transition-colors outline-none resize-none
                 ${isDisabled
                   ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed placeholder-gray-300'
                   : 'bg-white text-gray-900 border-gray-300 placeholder-gray-400'
                 }`}
             />
             {field.type === 'textarea' && !isDisabled && (
-              <div className="absolute bottom-2 right-3 text-xs text-gray-400 pointer-events-none">
+              <div className="absolute bottom-1 right-2 text-xs text-gray-400 pointer-events-none">
                 {(data[fieldId] || '').length}/100
               </div>
             )}
@@ -123,15 +123,15 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {config.map((field) => {
         const elements = [];
 
         // 새로운 카테고리가 시작되면 헤더 추가
         if (field.category !== lastCategory) {
           elements.push(
-            <div key={`header-${field.category}`} id={`section-${field.category}`} className="pt-6 pb-2 first:pt-2 scroll-mt-36">
-              <h3 className="text-lg font-black text-slate-800 flex items-center gap-2 border-b-2 border-slate-900 pb-2">
+            <div key={`header-${field.category}`} id={`section-${field.category}`} className="pt-3 pb-1 first:pt-1 scroll-mt-36">
+              <h3 className="text-sm font-black text-slate-800 flex items-center gap-2 border-b-2 border-slate-900 pb-1">
                 {CATEGORY_TITLES[field.category]}
               </h3>
             </div>
