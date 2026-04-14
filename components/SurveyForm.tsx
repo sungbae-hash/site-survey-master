@@ -5,6 +5,8 @@ interface SurveyFormProps {
   config: SurveyField[];
   data: Record<string, any>;
   onChange: (id: string, value: any) => void;
+  enabledFields: Set<string>;
+  onToggleField: (id: string) => void;
 }
 
 const CATEGORY_TITLES: Record<SurveyCategory, string> = {
@@ -14,19 +16,18 @@ const CATEGORY_TITLES: Record<SurveyCategory, string> = {
   access: '🚧 출입 및 환경',
 };
 
-const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
+const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange, enabledFields, onToggleField }) => {
   let lastCategory: SurveyCategory | null = null;
 
   const renderInput = (field: SurveyField, index?: number) => {
     const fieldId = index !== undefined ? `${field.id}_${index}` : field.id;
-    const isActive = field.condition ? field.condition(data) : true;
+    const isConditionMet = field.condition ? field.condition(data) : true;
 
-    // 조건 미충족 시 아예 숨김 처리 (사용자 요청: "목록이 너무 길어")
-    if (!isActive) return null;
+    if (!isConditionMet) return null;
 
-    const isDisabled = false; // 더 이상 비활성화 상태 사용 안함 (숨김 처리됨)
+    const isEnabled = enabledFields.has(field.id);
+    const isDisabled = !isEnabled;
 
-    // 호기별 라벨 생성 (예: 원폴 1호기 지선 수)
     const towerType = data['towerType'] || '폴';
     const displayLabel = index !== undefined
       ? `${towerType} ${index + 1}호기 ${field.label.split('. ')[1]}`
@@ -36,18 +37,34 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
       <div
         key={fieldId}
         id={`field-${field.id}`}
-        className={`bg-white p-3 rounded-lg shadow-sm border border-gray-100 transition-all duration-300 scroll-mt-28 ${isDisabled ? 'bg-gray-50 opacity-80' : 'hover:shadow-md'}`}
+        className={`bg-white p-3 rounded-lg shadow-sm border transition-all duration-200 scroll-mt-28 ${
+          isDisabled
+            ? 'border-gray-100 opacity-50'
+            : 'border-gray-100 hover:shadow-md'
+        }`}
       >
-        <label className={`block text-xs font-bold mb-1.5 ${isDisabled ? 'text-gray-400' : 'text-gray-800'}`}>
-          {displayLabel}
-        </label>
-
-        {isDisabled && field.prerequisite && (
-          <div className="mb-1.5 px-2 py-1 bg-orange-50 border border-orange-100 rounded text-xs font-bold text-orange-600 flex items-start gap-1">
-            <span>⚠️</span>
-            <span>{field.prerequisite}</span>
-          </div>
-        )}
+        <div className="flex items-start justify-between mb-1.5 gap-2">
+          <label className={`block text-xs font-bold leading-snug ${isDisabled ? 'text-gray-400' : 'text-gray-800'}`}>
+            {displayLabel}
+          </label>
+          {/* 항목 선택 토글 (repeatBy가 없는 원본 항목에만 표시) */}
+          {index === undefined && (
+            <button
+              type="button"
+              onClick={() => onToggleField(field.id)}
+              className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                isEnabled
+                  ? 'bg-blue-600 border-blue-600 text-white'
+                  : 'bg-white border-gray-300 text-transparent'
+              }`}
+              title={isEnabled ? '항목 제외' : '항목 포함'}
+            >
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2 6l3 3 5-5" />
+              </svg>
+            </button>
+          )}
+        </div>
 
         {field.type === 'select' && (
           <div className="relative">
@@ -68,7 +85,7 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
               }}
             >
               <option value="" className="text-gray-400">
-                {isDisabled ? '선행 조건 미충족' : '선택하세요'}
+                {isDisabled ? '미선택 항목' : '선택하세요'}
               </option>
               {field.options?.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -111,7 +128,7 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
                   : 'bg-white text-gray-900 border-gray-300 placeholder-gray-400'
                 }`}
             />
-            {field.type === 'textarea' && !isDisabled && (
+            {!isDisabled && (
               <div className="absolute bottom-1 right-2 text-xs text-gray-400 pointer-events-none">
                 {(data[fieldId] || '').length}/100
               </div>
@@ -125,9 +142,8 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
   return (
     <div className="space-y-2">
       {config.map((field) => {
-        const elements = [];
+        const elements: React.ReactNode[] = [];
 
-        // 새로운 카테고리가 시작되면 헤더 추가
         if (field.category !== lastCategory) {
           elements.push(
             <div key={`header-${field.category}`} id={`section-${field.category}`} className="pt-3 pb-1 first:pt-1 scroll-mt-36">
@@ -139,7 +155,6 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ config, data, onChange }) => {
           lastCategory = field.category;
         }
 
-        // 항목 렌더링
         if (field.repeatBy && data[field.repeatBy]) {
           const count = parseInt(data[field.repeatBy]) || 0;
           if (count > 0 && (!field.condition || field.condition(data))) {

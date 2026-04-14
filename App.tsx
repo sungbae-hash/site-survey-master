@@ -13,6 +13,9 @@ const App: React.FC = () => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [copyStatus, setCopyStatus] = useState<string>('');
   const [showPreview, setShowPreview] = useState(false);
+  const [enabledFields, setEnabledFields] = useState<Set<string>>(
+    () => new Set(SURVEY_CONFIG.map((f) => f.id))
+  );
 
   useEffect(() => {
     loadKakaoMapScript();
@@ -38,6 +41,15 @@ const App: React.FC = () => {
 
   const handleFormChange = (id: string, value: any) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleToggleField = (id: string) => {
+    setEnabledFields((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
 
   const filteredSurveyFields = SURVEY_CONFIG;
@@ -79,6 +91,7 @@ const App: React.FC = () => {
 
     filteredSurveyFields.forEach((field) => {
       if (field.condition && !field.condition(formData)) return;
+      if (!enabledFields.has(field.id)) return;
 
       if (field.repeatBy && formData[field.repeatBy]) {
         const count = parseInt(formData[field.repeatBy]) || 0;
@@ -101,7 +114,7 @@ const App: React.FC = () => {
 
     lines.push(`----------------------------------------`);
     return lines.join('\n');
-  }, [locationData, formData, filteredSurveyFields]);
+  }, [locationData, formData, filteredSurveyFields, enabledFields]);
 
   const handleCopyAction = async () => {
     try {
@@ -211,7 +224,7 @@ const App: React.FC = () => {
               Site Survey Checklist
             </h2>
           </div>
-          <SurveyForm config={filteredSurveyFields} data={formData} onChange={handleFormChange} />
+          <SurveyForm config={filteredSurveyFields} data={formData} onChange={handleFormChange} enabledFields={enabledFields} onToggleField={handleToggleField} />
         </section>
       </main>
 

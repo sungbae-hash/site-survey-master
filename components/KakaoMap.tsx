@@ -165,7 +165,7 @@ const KakaoMap: React.FC<KakaoMapProps> = ({ currentLocation, onLocationSelect }
   }, [currentLocation, loadStatus, mapInstance]);
 
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden shadow-inner border border-gray-200 bg-gray-50 aspect-video sm:h-80">
+    <div className="relative w-full rounded-2xl overflow-hidden shadow-inner border border-gray-200 bg-gray-50 h-72 sm:h-[26rem]">
       {/* 로딩 상태 */}
       {loadStatus === 'loading' && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-gray-50">
